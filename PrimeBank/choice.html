@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeBank — Выбор кредита</title>
+    <link rel="stylesheet" href="/choice.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/logopng.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/logopng.png">
+    <link rel="apple-touch-icon" href="/img/logopng.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    * { box-sizing: border-box; font-family: Roboto, "Open Sans", sans-serif; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Фоновый логотип текста */
+    body::before {
+      content: "PrimeBank";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 120px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.07);
+      white-space: nowrap;
+      z-index: 0;
+      user-select: none;
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.02); }
+    }
+
+    .container {
+      display: flex;
+      gap: 32px;
+      padding: 20px;
+      flex-wrap: wrap;
+      z-index: 1;
+      position: relative;
+    }
+
+    .card {
+      width: 300px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 32px 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInCard 0.6s forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+
+    @keyframes fadeInCard {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(32,58,67,0.08), rgba(44,83,100,0.08));
+      opacity: 0;
+      transition: 0.3s;
+    }
+
+    .card:hover::before { opacity: 1; }
+    .card:hover { transform: translateY(-6px); }
+
+    .title { font-size: 22px; font-weight: 700; margin-bottom: 12px; color: #203a43; }
+    .desc { font-size: 15px; color: #555; line-height: 1.5; margin-bottom: 24px; }
+    .btn { display: inline-block; padding: 12px 20px; border-radius: 10px; background: #203a43; color: #fff; font-size: 15px; font-weight: 500; transition: 0.3s; }
+    .btn:hover { background: #162b33; transform: translateY(-2px); }
+
+    @media (max-width: 700px) {
+      .container { flex-direction: column; align-items: center; }
+      .card { width: 90%; padding: 24px; margin-bottom: 20px; }
+      body::before { font-size: 80px; }
+    }
+
+    /* Модальное окно */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 15% auto; 
+        padding: 20px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        position: relative;
+        font-size: 16px;
+        color: #203a43;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #555;
+    }
+    .close:hover {
+        color: #203a43;
+    }
+
+</style>
+
+</head>
+<body>
+    
+    <div class="container">
+        <div class="card" onclick="selectLoan('no-collateral')">
+            <div class="title">Кредит без залога</div>
+            <div class="desc">Быстрое оформление без обеспечения.<br>Подходит для личных целей и срочных расходов.</div>
+            <div class="btn">Выбрать</div>
+        </div>
+
+        <div class="card" onclick="selectLoan('collateral')">
+            <div class="title">Кредит под залог</div>
+            <div class="desc">Более выгодные условия при предоставлении залога.<br>Для крупных сумм и долгосрочных целей.</div>
+            <div class="btn">Выбрать</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <p>Сервис в данный момент недоступен</p>
+        </div>
+    </div>
+
+<script>
+    function selectLoan(type) {
+        if (type === "no-collateral") {
+            localStorage.setItem("loanType", type);
+            window.location.href = "loan-no-collateral.html";
+        } else {
+            // Показать модальное окно для кредита под залог
+            const modal = document.getElementById("modal");
+            modal.style.display = "block";
+        }
+    }
+
+    // Закрытие модального окна
+    const closeModal = document.getElementById("closeModal");
+    closeModal.onclick = () => {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    // Закрытие при клике вне модального окна
+    window.onclick = (event) => {
+        const modal = document.getElementById("modal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
