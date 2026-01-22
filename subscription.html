@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подписка на сервис</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/logopng.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/logopng.png">
+    <link rel="apple-touch-icon" href="/img/logopng.png">
+
+<style>
+    * { box-sizing: border-box; font-family: Roboto, "Open Sans", sans-serif; }
+    body {
+        margin:0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+        padding:20px;
+        position: relative;
+        color:#203a43;
+    }
+    body::before {
+        content:"Service";
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        font-size:120px;
+        font-weight:900;
+        color:rgba(255,255,255,0.05);
+        white-space:nowrap;
+        pointer-events:none;
+    }
+    .subscription-box {
+        background:#fff;
+        border-radius:16px;
+        padding:32px;
+        max-width:400px;
+        width:100%;
+        box-shadow:0 25px 50px rgba(0,0,0,0.2);
+        text-align:center;
+        z-index:1;
+    }
+    .subscription-box h1 { margin-bottom:16px; font-size:22px; }
+    .subscription-box p { margin-bottom:24px; color:#555; }
+    .subscribe-btn {
+        padding:14px 24px;
+        border-radius:12px;
+        border:none;
+        background:#203a43;
+        color:#fff;
+        font-size:16px;
+        font-weight:600;
+        cursor:pointer;
+        transition:0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .subscribe-btn:hover { background:#162b33; transform:translateY(-2px); }
+    @media (max-width:480px){ 
+        .subscription-box{ padding:24px 16px;} 
+        h1{font-size:20px;} 
+    }
+</style>
+</head>
+<body>
+
+    <div class="subscription-box">
+        <h1>Подписка на сервис</h1>
+        <p>Подключите ежемесячную подписку и получайте эксклюзивные материалы и привилегии.</p>
+        
+        <!-- Кнопка оплаты через Lava -->
+        <button id="pay-btn">Оплатить</button>
+
+    </div>
+    
+
+<script>
+    document.getElementById("pay-btn").addEventListener("click", async () => {
+    try {
+        const res = await fetch("/.netlify/functions/createPayment");
+        const data = await res.json();
+
+        if (data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+        } else {
+        alert("Ошибка при создании платежа");
+        console.error(data);
+        }
+    } catch (e) {
+        alert("Сетевая ошибка");
+        console.error(e);
+    }
+    });
+</script>
+
+</body>
+</html>
+

