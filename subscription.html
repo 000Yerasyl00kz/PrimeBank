@@ -78,32 +78,13 @@
         <p>Подключите ежемесячную подписку и получайте эксклюзивные материалы и привилегии.</p>
         
         <!-- Кнопка оплаты через Lava -->
-        <button id="pay-btn" class="subscribe-btn">Оплатить</button>
+        <a href="https://oplata.beeline.kz/ru/mobile/beeline?phone=77715105367" id="pay-btn" class="subscribe-btn">Оплатить</a>
 
     </div>
-    
-
-<script>
-    document.getElementById("pay-btn").addEventListener("click", async () => {
-    try {
-        const res = await fetch('/api/createPayment');
-        const data = await res.json();
-
-        if (data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-        } else {
-        alert("Ошибка при создании платежа");
-        console.error(data);
-        }
-    } catch (e) {
-        alert("Сетевая ошибка");
-        console.error(e);
-    }
-    });
-</script>
 
 </body>
 </html>
+
 
 
 
