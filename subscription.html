@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="/logopng.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="logopng.png">
-    <link rel="apple-touch-icon" href="logopng.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/logopng.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/logopng.png">
+    <link rel="apple-touch-icon" href="/img/logopng.png">
 
 <style>
     * { box-sizing: border-box; font-family: Roboto, "Open Sans", sans-serif; }
@@ -51,6 +51,16 @@
     }
     .subscription-box h1 { margin-bottom:16px; font-size:22px; }
     .subscription-box p { margin-bottom:24px; color:#555; }
+    .instructions {
+        text-align:left;
+        background:#f5f5f5;
+        padding:16px;
+        border-radius:12px;
+        margin-bottom:24px;
+        font-size:14px;
+        color:#333;
+        line-height:1.5;
+    }
     .subscribe-btn {
         padding:14px 24px;
         border-radius:12px;
@@ -75,15 +85,39 @@
 
     <div class="subscription-box">
         <h1>Подписка на сервис</h1>
-        <p>Подключите ежемесячную подписку и получайте эксклюзивные материалы и привилегии.</p>
-        
-        <!-- Кнопка оплаты через Lava -->
-        <a href="https://oplata.beeline.kz/ru/mobile/beeline?phone=77715105367" id="pay-btn" class="subscribe-btn">Оплатить</a>
+        <p>Оплатите 5000₸ через Kaspi Bank, чтобы получить доступ к договору о займе.</p>
 
+        <div class="instructions">
+            <strong>Инструкция по оплате:</strong>
+            <ol>
+                <li>Откройте приложение <strong>Kaspi.kz</strong> на телефоне.</li>
+                <li>Перейдите во вкладку <strong>Переводы</strong>.</li>
+                <li>Выберите <strong>Перевод по номеру</strong>.</li>
+                <li>Введите номер: <strong>+7 771 510 5367</strong></li>
+                <li>Введите сумму: <strong>5000₸</strong></li>
+                <li>В комментарии напишите своё <strong>ФИО</strong>.</li>
+                <li>Нажмите <strong>Оплатить</strong> и подтвердите перевод.</li>
+                <li>Вернитесь на эту страницу и нажмите кнопку <strong>Оплачено</strong>.</li>
+                <li>Дождитесь проверки (около 2 минут) — доступ будет открыт автоматически.</li>
+            </ol>
+        </div>
+
+        <!-- Кнопка подтверждения оплаты -->
+        <a href="#" id="pay-btn" class="subscribe-btn">Оплачено</a>
     </div>
+
+<script>
+    document.getElementById('pay-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Простое кастомное уведомление
+        alert("Вы пока не совершили оплату. Пожалуйста, следуйте инструкции выше, чтобы получить доступ к договору.");
+    });
+</script>
 
 </body>
 </html>
+
 
 
 
