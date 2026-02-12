@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeBank — Договор займа</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/logopng.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/logopng.png">
+    <link rel="apple-touch-icon" href="/img/logopng.png">
+
+<!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+
+<style>
+body{
+    font-family:"Times New Roman", serif;
+    max-width:900px;
+    margin:40px auto;
+    line-height:1.6;
+}
+h2{text-align:center;}
+.section-title{
+    font-weight:bold;
+    margin-top:20px;
+}
+.sign-btn{
+    margin-top:40px;
+    padding:12px 25px;
+    font-size:16px;
+    cursor:pointer;
+}
+.signature-status{
+    margin-top:20px;
+    color:green;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+    <h2>ДОГОВОР ЗАЙМА</h2>
+
+    <p>г. Алматы</p>
+    <p id="contractDate"></p>
+
+    <p>
+    ТОО «PrimeBank», именуемое в дальнейшем «Займодатель», 
+    и <strong id="borrowerName"></strong>, ИИН <span id="iin"></span>,
+    именуемый в дальнейшем «Заемщик», заключили настоящий договор:
+    </p>
+
+    <div class="section-title">1. Предмет договора</div>
+
+    <p>
+    1.1. Займодатель передает Заемщику денежные средства 
+    в размере <strong id="loanAmountText"></strong>.
+    </p>
+
+    <p>
+    1.2. Срок займа составляет <span id="loanTermText"></span>.
+    </p>
+
+    <p>
+    1.3. Процентная ставка — 20% годовых.
+    </p>
+
+    <p>
+    1.4. Общая сумма возврата составляет <strong id="totalReturnText"></strong>.
+    </p>
+
+    <p>
+    1.5. Ежемесячный платеж — <strong id="monthlyPaymentText"></strong>.
+    </p>
+
+    <div class="section-title">2. Реквизиты Заемщика</div>
+
+    <p>
+    Адрес регистрации: <span id="registeredAddress"></span><br>
+    Фактический адрес: <span id="actualAddress"></span><br>
+    Номер удостоверения личности: <span id="idNumber"></span><br>
+    Сотовый телефон: <span id="mobilePhone"></span><br>
+    Домашний телефон: <span id="homePhone"></span><br>
+    Место работы: <span id="workPlace"></span><br>
+    Рабочий телефон: <span id="workPhone"></span><br>
+    Ежемесячный доход: <span id="income"></span>
+    </p>
+
+    <div class="section-title">3. Подписи сторон</div>
+
+    <p>
+    Займодатель:
+    <img src="/Nursltn.png" style="width:70px;">
+    </p>
+
+    <p>
+    Заемщик: _______________________
+    </p>
+
+    <button class="sign-btn" onclick="signContract()">Подписать</button>
+    <div id="signatureStatus" class="signature-status"></div>
+
+<script>
+const data = JSON.parse(localStorage.getItem("loanNoCollateralForm"));
+const clientName = localStorage.getItem("name");
+
+if(data){
+
+    const loanAmount = parseFloat(data.loanAmount);
+    const loanTerm = parseInt(data.loanTerm);
+    const interestRate = 0.20;
+    const totalReturn = loanAmount + loanAmount * interestRate;
+    const monthlyPayment = totalReturn / loanTerm;
+
+    // Дата договора
+    const now = new Date();
+    document.getElementById("contractDate").textContent =
+        `«${now.toLocaleDateString()}»`;
+
+    // Основные данные
+    document.getElementById("borrowerName").textContent = clientName || "";
+    document.getElementById("iin").textContent = data.iin;
+
+    document.getElementById("loanAmountText").textContent =
+        loanAmount.toLocaleString() + " тенге";
+
+    document.getElementById("loanTermText").textContent =
+        loanTerm + " месяцев";
+
+    document.getElementById("totalReturnText").textContent =
+        totalReturn.toLocaleString() + " тенге";
+
+    document.getElementById("monthlyPaymentText").textContent =
+        monthlyPayment.toLocaleString() + " тенге";
+
+    // Реквизиты
+    document.getElementById("registeredAddress").textContent = data.registeredAddress;
+    document.getElementById("actualAddress").textContent = data.actualAddress || "-";
+    document.getElementById("idNumber").textContent = data.idNumber;
+    document.getElementById("mobilePhone").textContent = data.mobilePhone;
+    document.getElementById("homePhone").textContent = data.homePhone;
+    document.getElementById("workPlace").textContent = data.workPlace;
+    document.getElementById("workPhone").textContent = data.workPhone;
+    document.getElementById("income").textContent = data.income;
+
+} else {
+    document.body.innerHTML = "<div style='text-align:center; margin-top:50px;'>Данные не найдены. Пожалуйста, заполните заявку.</div>";
+}
+
+// Подписание
+function signContract(){
+    const signedAt = new Date().toISOString();
+    localStorage.setItem("contractSignedAt", signedAt);
+
+    // при необходимости можно сохранить статус
+    localStorage.setItem("contractStatus", "signed");
+
+    // редирект на нужную страницу
+    window.location.href = "subscription.html"; 
+}
+</script>
+</body>
+</html>
