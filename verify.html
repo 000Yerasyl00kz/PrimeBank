@@ -6,6 +6,10 @@
 <title>PrimeBank — Подтверждение</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin:0;
   min-height:100vh;
@@ -15,6 +19,7 @@ body {
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   font-family: Roboto, sans-serif;
 }
+
 .auth-container {
   background:#fff;
   width:100%;
@@ -23,13 +28,26 @@ body {
   border-radius:16px;
   box-shadow:0 20px 40px rgba(0,0,0,0.15);
 }
+
+.auth-container h2 {
+  margin-top:0;
+  margin-bottom:24px;
+  text-align:center;
+}
+
+form {
+  width:100%;
+}
+
 input {
   width:100%;
-  padding:12px;
+  padding:12px 14px;
   margin-bottom:16px;
   border-radius:8px;
   border:1px solid #ccc;
+  font-size:15px;
 }
+
 button {
   width:100%;
   padding:14px;
@@ -39,10 +57,19 @@ button {
   color:#fff;
   font-size:16px;
   cursor:pointer;
+  transition:0.3s;
 }
+
+button:hover {
+  background:#162b33;
+}
+
 .error {
+  margin-top:12px;
+  font-size:14px;
   color:red;
   display:none;
+  text-align:center;
 }
 </style>
 </head>
@@ -101,3 +128,4 @@ form.addEventListener("submit", async function(e){
 
 </body>
 </html>
+
